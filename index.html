@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yao Kanvoumien — Cybersécurité</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0A0A0F;
+    --navy: #0F1628;
+    --navy-mid: #162040;
+    --gold: #C9A84C;
+    --gold-light: #E8C97A;
+    --gold-dim: rgba(201,168,76,0.15);
+    --white: #F5F3EE;
+    --white-dim: rgba(245,243,238,0.6);
+    --white-faint: rgba(245,243,238,0.1);
+    --border: rgba(201,168,76,0.2);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--black); color: var(--white); font-family: 'DM Sans', sans-serif; font-weight: 300; overflow-x: hidden; }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 24px 60px; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(to bottom, rgba(10,10,15,0.95), transparent); backdrop-filter: blur(8px); }
+  .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; letter-spacing: 2px; color: var(--gold); text-decoration: none; }
+  .nav-links { display: flex; gap: 40px; list-style: none; }
+  .nav-links a { font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--white-dim); text-decoration: none; transition: color 0.3s; }
+  .nav-links a:hover { color: var(--gold); }
+
+  #hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; align-items: center; padding: 120px 60px 80px; position: relative; overflow: hidden; }
+  .hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 60% 60% at 70% 50%, rgba(201,168,76,0.06), transparent), radial-gradient(ellipse 40% 40% at 20% 80%, rgba(15,22,40,0.8), transparent); }
+  .hero-grid { position: absolute; inset: 0; opacity: 0.03; background-image: linear-gradient(var(--gold) 1px, transparent 1px), linear-gradient(90deg, var(--gold) 1px, transparent 1px); background-size: 60px 60px; }
+  .hero-left { position: relative; z-index: 2; }
+  .hero-tag { display: inline-flex; align-items: center; gap: 10px; font-family: 'DM Mono', monospace; font-size: 11px; color: var(--gold); letter-spacing: 2px; margin-bottom: 32px; opacity: 0; animation: fadeUp 0.8s ease 0.2s forwards; }
+  .hero-tag::before { content: ''; width: 30px; height: 1px; background: var(--gold); }
+  h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(52px, 6vw, 82px); font-weight: 300; line-height: 1.05; letter-spacing: -1px; opacity: 0; animation: fadeUp 0.8s ease 0.4s forwards; }
+  h1 span { color: var(--gold); font-style: italic; }
+  .hero-sub { margin-top: 28px; font-size: 15px; line-height: 1.8; color: var(--white-dim); max-width: 480px; opacity: 0; animation: fadeUp 0.8s ease 0.6s forwards; }
+  .hero-actions { margin-top: 48px; display: flex; gap: 20px; align-items: center; opacity: 0; animation: fadeUp 0.8s ease 0.8s forwards; }
+  .btn-primary { padding: 14px 32px; background: var(--gold); color: var(--black); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; text-decoration: none; transition: all 0.3s; clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px)); }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
+  .btn-ghost { padding: 14px 32px; background: transparent; color: var(--white-dim); font-size: 13px; letter-spacing: 1px; text-transform: uppercase; text-decoration: none; border: 1px solid var(--border); transition: all 0.3s; }
+  .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+  .hero-right { position: relative; z-index: 2; display: flex; justify-content: center; align-items: center; }
+  .photo-frame { position: relative; width: 380px; height: 480px; opacity: 0; animation: fadeIn 1s ease 0.6s forwards; }
+  .photo-frame::before { content: ''; position: absolute; top: -12px; right: -12px; bottom: 12px; left: 12px; border: 1px solid var(--border); z-index: 0; }
+  .photo-frame::after { content: ''; position: absolute; top: 12px; right: 12px; bottom: -12px; left: -12px; border: 1px solid var(--gold-dim); z-index: 0; }
+  .photo-box { width: 100%; height: 100%; background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%); position: relative; z-index: 1; overflow: hidden; }
+  .photo-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .photo-corner { position: absolute; width: 24px; height: 24px; border-color: var(--gold); border-style: solid; z-index: 2; }
+  .photo-corner.tl { top: 0; left: 0; border-width: 2px 0 0 2px; }
+  .photo-corner.tr { top: 0; right: 0; border-width: 2px 2px 0 0; }
+  .photo-corner.bl { bottom: 0; left: 0; border-width: 0 0 2px 2px; }
+  .photo-corner.br { bottom: 0; right: 0; border-width: 0 2px 2px 0; }
+
+  section { padding: 100px 60px; }
+  .section-label { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--gold); letter-spacing: 3px; text-transform: uppercase; display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+  .section-label::after { content: ''; flex: 1; max-width: 60px; height: 1px; background: var(--gold); opacity: 0.4; }
+  .section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(36px, 4vw, 52px); font-weight: 300; line-height: 1.1; margin-bottom: 60px; }
+
+  #apropos { background: var(--navy); }
+  .apropos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+  .apropos-text p { font-size: 16px; line-height: 1.9; color: var(--white-dim); margin-bottom: 20px; }
+  .apropos-text p strong { color: var(--white); font-weight: 500; }
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+  .stat-card { background: var(--black); padding: 32px 28px; border-left: 2px solid transparent; transition: border-color 0.3s; }
+  .stat-card:hover { border-color: var(--gold); }
+  .stat-num { font-family: 'Cormorant Garamond', serif; font-size: 48px; font-weight: 300; color: var(--gold); line-height: 1; }
+  .stat-label { font-size: 12px; letter-spacing: 1px; color: var(--white-dim); margin-top: 8px; text-transform: uppercase; }
+
+  #projets { background: var(--black); }
+  .projects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+  .project-card { background: var(--navy); padding: 48px 40px; position: relative; overflow: hidden; border: 1px solid transparent; transition: border-color 0.4s, transform 0.3s; }
+  .project-card:hover { border-color: var(--border); transform: translateY(-4px); }
+  .project-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--gold), transparent); transform: scaleX(0); transform-origin: left; transition: transform 0.4s; }
+  .project-card:hover::before { transform: scaleX(1); }
+  .project-year { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--gold); letter-spacing: 2px; margin-bottom: 20px; }
+  .project-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 400; margin-bottom: 8px; }
+  .project-subtitle { font-size: 13px; color: var(--gold); letter-spacing: 1px; margin-bottom: 20px; font-style: italic; }
+  .project-desc { font-size: 14px; line-height: 1.8; color: var(--white-dim); margin-bottom: 20px; }
+  .project-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+  .tag { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1px; padding: 5px 12px; border: 1px solid var(--border); color: var(--white-dim); }
+  .project-metrics { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--white-faint); display: flex; gap: 32px; }
+  .metric-val { font-family: 'Cormorant Garamond', serif; font-size: 26px; color: var(--gold-light); font-weight: 300; }
+  .metric-lbl { font-size: 11px; color: var(--white-dim); margin-top: 2px; }
+
+  #experiences { background: var(--navy); }
+  .exp-list { display: flex; flex-direction: column; gap: 2px; }
+  .exp-item { background: var(--black); padding: 40px 48px; display: grid; grid-template-columns: 200px 1fr; gap: 40px; align-items: start; border-left: 2px solid transparent; transition: border-color 0.3s; }
+  .exp-item:hover { border-color: var(--gold); }
+  .exp-date { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--gold); letter-spacing: 1px; padding-top: 4px; }
+  .exp-org { font-size: 12px; color: var(--white-dim); margin-top: 6px; line-height: 1.6; }
+  .exp-role { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 400; margin-bottom: 12px; }
+  .exp-badge { display: inline-block; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1.5px; padding: 4px 12px; background: var(--gold-dim); color: var(--gold); margin-bottom: 16px; }
+  .exp-bullets { list-style: none; margin-top: 8px; }
+  .exp-bullets li { font-size: 14px; color: var(--white-dim); line-height: 1.7; padding-left: 16px; position: relative; margin-bottom: 6px; }
+  .exp-bullets li::before { content: '—'; position: absolute; left: 0; color: var(--gold); font-size: 12px; }
+
+  #contact { background: var(--black); text-align: center; padding: 120px 60px; }
+  .contact-inner { max-width: 600px; margin: 0 auto; }
+  .contact-inner .section-label { justify-content: center; }
+  .contact-inner .section-label::after { display: none; }
+  .contact-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(42px, 5vw, 64px); font-weight: 300; line-height: 1.1; margin: 20px 0 16px; }
+  .contact-sub { font-size: 15px; color: var(--white-dim); line-height: 1.7; margin-bottom: 48px; }
+  .contact-email { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--gold); text-decoration: none; letter-spacing: 1px; border-bottom: 1px solid var(--border); padding-bottom: 4px; transition: color 0.3s, border-color 0.3s; }
+  .contact-email:hover { color: var(--gold-light); border-color: var(--gold); }
+  .contact-links { margin-top: 48px; display: flex; justify-content: center; gap: 32px; }
+  .contact-link { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 2px; color: var(--white-dim); text-decoration: none; text-transform: uppercase; transition: color 0.3s; }
+  .contact-link:hover { color: var(--gold); }
+
+  footer { background: var(--navy); padding: 32px 60px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); }
+  .footer-name { font-family: 'Cormorant Garamond', serif; font-size: 16px; color: var(--white-dim); }
+  .footer-copy { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--white-faint); letter-spacing: 1px; }
+
+
+  /* ── PHOTOS D'ÉVÉNEMENTS ── */
+  .exp-photos {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .exp-photo {
+    position: relative;
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    background: var(--navy-mid);
+    border: 1px solid var(--border);
+  }
+  .exp-photo img {
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+    transition: transform 0.4s ease;
+  }
+  .exp-photo:hover img { transform: scale(1.04); }
+  .exp-photo-label {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 6px 10px;
+    background: linear-gradient(transparent, rgba(10,10,15,0.85));
+    font-family: 'DM Mono', monospace;
+    font-size: 9px; letter-spacing: 1px;
+    color: var(--gold); text-transform: uppercase;
+  }
+
+  .exp-photos { margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .exp-photo { position: relative; aspect-ratio: 4/3; overflow: hidden; background: var(--navy-mid); border: 1px solid var(--border); }
+  .exp-photo img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
+  .exp-photo:hover img { transform: scale(1.04); }
+  .exp-photo-label { position: absolute; bottom: 0; left: 0; right: 0; padding: 6px 10px; background: linear-gradient(transparent, rgba(10,10,15,0.85)); font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1px; color: var(--gold); text-transform: uppercase; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  @media (max-width: 900px) {
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    #hero { grid-template-columns: 1fr; padding: 100px 24px 60px; }
+    .hero-right { display: none; }
+    section { padding: 70px 24px; }
+    .apropos-grid, .projects-grid { grid-template-columns: 1fr; gap: 32px; }
+    .exp-item { grid-template-columns: 1fr; gap: 12px; padding: 28px 24px; }
+    footer { padding: 24px; flex-direction: column; gap: 12px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="#hero">YK.</a>
+  <ul class="nav-links">
+    <li><a href="#apropos">À propos</a></li>
+    <li><a href="#projets">Projets</a></li>
+    <li><a href="#experiences">Expériences</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-left">
+    <div class="hero-tag">GRC & Analyste en Cybersécurité Junior · Abidjan</div>
+    <h1>Yao<br><span>Kanvoumien</span><br>Paul Elie</h1>
+    <p class="hero-sub">
+      Je construis des systèmes qui protègent et des politiques qui durent. Spécialisé en GRC et sécurité applicative, je suis basé à Abidjan et j'interviens de l'audit de conformité à la détection d'intrusions en temps réel.
+    </p>
+    <div class="hero-actions">
+      <a href="#projets" class="btn-primary">Voir mes projets</a>
+      <a href="#contact" class="btn-ghost">Me contacter</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="photo-frame">
+      <div class="photo-box">
+        <img src="images/photo.jpg" alt="Yao Kanvoumien">
+      </div>
+      <div class="photo-corner tl"></div>
+      <div class="photo-corner tr"></div>
+      <div class="photo-corner bl"></div>
+      <div class="photo-corner br"></div>
+    </div>
+  </div>
+</section>
+
+<section id="apropos">
+  <div class="section-label">À propos</div>
+  <h2 class="section-title">GRC, sécurité &<br>détection d'intrusions</h2>
+  <div class="apropos-grid reveal">
+    <div class="apropos-text">
+      <p>
+        Basé à <strong>Abidjan, Côte d'Ivoire</strong>, je me suis orienté vers la cybersécurité avec un intérêt marqué pour la <strong>Gouvernance, Risques et Conformité (GRC)</strong>, mais sans jamais perdre de vue la dimension technique. Ce qui me définit, c'est cette capacité à penser à la fois en termes de politiques et de protocoles : comprendre le risque en surface, et savoir ce qui se passe réellement sous le capot.
+      </p>
+      <p>
+        Mon parcours combine une <strong>première année en administration des systèmes et sécurité des réseaux</strong>, une <strong>année au Ghana</strong> dédiée à la maîtrise de l'anglais (niveau C1 obtenu au Helez Training Centre, Accra) et un <strong>Bachelor in Computing with Business Management</strong> (NCC Education, Angleterre, en ligne) dont je suis en <strong>dernière année</strong>. Des expériences terrain concrètes complètent cette formation, notamment la mise en place de politiques de sécurité depuis zéro dans un environnement professionnel réel.
+      </p>
+      <p>
+        Côté certifications, j'ai obtenu le <strong>Fortinet Certified Associate (FCA)</strong>, le <strong>Fortinet Certified Fundamentals (FCF)</strong> et le <strong>Cisco Cybersecurity Essentials</strong>. Je me prépare à passer la <strong>CompTIA Security+</strong> et l'<strong>ISO/IEC 27001 Lead Implementer</strong> d'ici fin 2026 : deux certifications qui reflètent ma double orientation technique et GRC. Je pratique sur <strong>TryHackMe</strong> et <strong>HackTheBox</strong> pour maintenir mes réflexes offensifs et défensifs.
+      </p>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-num">3</div>
+        <div class="stat-label">Certifications obtenues</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">2</div>
+        <div class="stat-label">Victoires en compétition</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">4</div>
+        <div class="stat-label">Hackathons & Concours</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">2</div>
+        <div class="stat-label">Projets réalisés</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="projets">
+  <div class="section-label">Projets</div>
+  <h2 class="section-title">Ce que j'ai construit</h2>
+  <div class="projects-grid">
+
+    <div class="project-card reveal">
+      <div class="project-year">2025 – 2026 · Projet de 3ème année de Bachelor</div>
+      <div class="project-title">SentinelX</div>
+      <div class="project-subtitle">IDS · Système de surveillance réseau temps réel</div>
+      <div class="project-desc">
+        Système de détection d'intrusions développé et déployé en conditions réelles dans un environnement professionnel. Point de départ : zéro infrastructure de sécurité existante. SentinelX a été conçu et mis en place depuis le début.
+      </div>
+      <div class="project-desc">
+        <strong style="color:var(--white);">Fonctionnalités :</strong> SSH Honeypot capturant les attaques (IP, credentials, timestamp), moteur de détection brute-force et scans réseau avec niveaux Low→Critical, blocage manuel des IP via iptables (contrôle humain pour éviter les faux positifs), dashboard Flask temps réel avec export CSV.
+      </div>
+      <div class="project-metrics">
+        <div class="metric">
+          <div class="metric-val">19/19</div>
+          <div class="metric-lbl">Tests unitaires validés</div>
+        </div>
+        <div class="metric">
+          <div class="metric-val">&lt; 2s</div>
+          <div class="metric-lbl">Latence dashboard</div>
+        </div>
+        <div class="metric">
+          <div class="metric-val">138</div>
+          <div class="metric-lbl">Ports détectés (test)</div>
+        </div>
+      </div>
+      <div class="project-tags">
+        <span class="tag">Python</span><span class="tag">Scapy</span><span class="tag">Paramiko</span>
+        <span class="tag">Flask</span><span class="tag">Socket.io</span><span class="tag">SQLite</span>
+        <span class="tag">Ubuntu 24.04</span><span class="tag">iptables</span>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-year">2024 – 2025 · Projet de 2ème année de Bachelor</div>
+      <div class="project-title">WiFi Analyzer</div>
+      <div class="project-subtitle">Diagnostic réseau intelligent</div>
+      <div class="project-desc">
+        Quand le Wi-Fi ne fonctionne pas, la plupart des gens ne savent pas si le problème vient de leur box, de leur fournisseur d'accès (ISP) ou du serveur distant qu'ils essaient d'atteindre. WiFi Analyzer répond précisément à cette question : en analysant le réseau toutes les 30 secondes et en localisant automatiquement la source du problème.
+      </div>
+      <div class="project-desc">
+        <strong style="color:var(--white);">Différenciation :</strong> Diagnostic différencié Local / ISP / Applicatif, score réseau sur 100, profils d'usage Gaming / Streaming / Visio, historique 24h et export PDF automatique.
+      </div>
+      <div class="project-metrics">
+        <div class="metric">
+          <div class="metric-val">100</div>
+          <div class="metric-lbl">Score réseau /100</div>
+        </div>
+        <div class="metric">
+          <div class="metric-val">30s</div>
+          <div class="metric-lbl">Cycle d'analyse</div>
+        </div>
+        <div class="metric">
+          <div class="metric-val">3</div>
+          <div class="metric-lbl">Sources diagnostiquées</div>
+        </div>
+      </div>
+      <div class="project-tags">
+        <span class="tag">Python</span><span class="tag">Flask</span><span class="tag">SQLite</span>
+        <span class="tag">Chart.js</span><span class="tag">APScheduler</span><span class="tag">ReportLab</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section id="experiences">
+  <div class="section-label">Expériences</div>
+  <h2 class="section-title">Terrain & Compétitions</h2>
+  <div class="exp-list">
+
+    <div class="exp-item reveal">
+      <div>
+        <div class="exp-date">Mars 2025<br>– Présent</div>
+        <div class="exp-org">Agence digitale<br>Abidjan, CI</div>
+      </div>
+      <div>
+        <div class="exp-badge">GRC · Cybersécurité</div>
+        <div class="exp-role">Consultant Cybersécurité</div>
+        <ul class="exp-bullets">
+          <li>Audit complet de l'existant et mise en place des politiques de sécurité depuis zéro</li>
+          <li>Définition des standards de conformité (GRC) pour applications web, sites et CRM</li>
+          <li>Tests de vulnérabilités (OWASP ZAP) sur les livrables avant mise en production</li>
+          <li>Surveillance réseau, détection d'incidents et recommandations correctives continues</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item reveal">
+      <div>
+        <div class="exp-date">Juillet 2025</div>
+        <div class="exp-org">Ivorian Genius<br>Contest · 48h</div>
+      </div>
+      <div>
+        <div class="exp-badge">1ère place</div>
+        <div class="exp-role">Vainqueur — Hackathon Robotique & Innovation</div>
+        <ul class="exp-bullets">
+          <li>Conception et développement d'un robot agricole innovant en 48 heures chrono</li>
+          <li>Utilisation d'outils d'électronique et d'informatique embarquée</li>
+          <li>Coordination d'équipe sous pression et livraison dans les délais impartis</li>
+        </ul>
+        <div class="exp-photos">
+          <div class="exp-photo">
+            <img src="images/ivorian-genius-cert.jpg" alt="Certificat" onerror="this.parentElement.style.display='none'">
+            <div class="exp-photo-label">Certificat</div>
+          </div>
+          <div class="exp-photo">
+            <img src="images/ivorian-genius-moment.jpg" alt="Hackathon" onerror="this.parentElement.style.display='none'">
+            <div class="exp-photo-label">Le moment</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="exp-item reveal">
+      <div>
+        <div class="exp-date">2025</div>
+        <div class="exp-org">Campus Startups<br>Ivoire · CDC-CI</div>
+      </div>
+      <div>
+        <div class="exp-badge">3ème place / 200 équipes</div>
+        <div class="exp-role">Responsable Sécurité — Projet BLUE</div>
+        <ul class="exp-bullets">
+          <li>Solution de paiement digital en Côte d'Ivoire (NFC & QR code) pour le transport urbain informel</li>
+          <li>Architecture sécurité : HTTPS/TLS, gestion des accès et rôles, protection des données</li>
+          <li>Compétition nationale télévisée sur Life TV, 3ème sur plus de 200 équipes participantes</li>
+        </ul>
+        <div class="exp-photos">
+          <div class="exp-photo">
+            <img src="images/campus-startups-cert.jpg" alt="Certificat" onerror="this.parentElement.style.display='none'">
+            <div class="exp-photo-label">Certificat</div>
+          </div>
+          <div class="exp-photo">
+            <img src="images/campus-startups-moment.jpg" alt="Campus Startups" onerror="this.parentElement.style.display='none'">
+            <div class="exp-photo-label">Le moment</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="exp-item reveal">
+      <div>
+        <div class="exp-date">2025</div>
+        <div class="exp-org">AI Hackathon<br>Powered by Google</div>
+      </div>
+      <div>
+        <div class="exp-badge">IA · Santé · Sécurité</div>
+        <div class="exp-role">Chargé de Sécurité — AssistDoc</div>
+        <ul class="exp-bullets">
+          <li>Plateforme médicale IA : base de données nationale de dossiers patients + copilote IA pour médecins</li>
+          <li>Responsable de l'architecture sécurité : protection des données médicales, gestion des accès et rôles</li>
+          <li>Stack : Django, Gemini API (Google), PostgreSQL, hackathon propulsé par Google</li>
+        </ul>
+        <div class="exp-photos">
+          <div class="exp-photo">
+            <img src="images/google-hackathon-cert.jpg" alt="Certificat" onerror="this.parentElement.style.display='none'">
+            <div class="exp-photo-label">Certificat</div>
+          </div>
+          <div class="exp-photo">
+            <img src="images/google-hackathon-moment.jpg" alt="AssistDoc" onerror="this.parentElement.style.display='none'">
+            <div class="exp-photo-label">Le moment</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="exp-item reveal">
+      <div>
+        <div class="exp-date">2024 – 2025</div>
+        <div class="exp-org">Technoxian<br>World Robotics</div>
+      </div>
+      <div>
+        <div class="exp-badge">Robotique internationale</div>
+        <div class="exp-role">Participant — Compétition de Robotique</div>
+        <ul class="exp-bullets">
+          <li>Participation aux manches qualificatives en Côte d'Ivoire de cette compétition internationale</li>
+          <li>Conception et fabrication d'un drone dans un délai contraint</li>
+          <li>Compétition dont la grande finale se tient annuellement en Inde</li>
+        </ul>
+        <div class="exp-photos">
+          <div class="exp-photo">
+            <img src="images/technoxian-cert.jpg" alt="Certificat" onerror="this.parentElement.style.display='none'">
+            <div class="exp-photo-label">Certificat</div>
+          </div>
+          <div class="exp-photo">
+            <img src="images/technoxian-moment.jpg" alt="Robotique" onerror="this.parentElement.style.display='none'">
+            <div class="exp-photo-label">Le moment</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section id="contact">
+  <div class="contact-inner reveal">
+    <div class="section-label" style="justify-content:center;">Contact</div>
+    <h2 class="contact-title">Travaillons<br><em>ensemble.</em></h2>
+    <p class="contact-sub">
+      Disponible pour des opportunités en cybersécurité et GRC, des missions d'audit ou de conseil. Basé à Abidjan, ouvert aux collaborations locales et internationales.
+    </p>
+    <a href="mailto:yaokanvoumien@gmail.com" class="contact-email">yaokanvoumien@gmail.com</a>
+    <div class="contact-links">
+      <a href="https://github.com/Mrrobot635" target="_blank" class="contact-link">GitHub</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="footer-name">Yao Kanvoumien Paul Elie</span>
+  <span class="footer-copy">© 2026 — Abidjan, Côte d'Ivoire</span>
+</footer>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
